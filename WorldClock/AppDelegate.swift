@@ -9,94 +9,109 @@ import AppKit
 import SwiftUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
- 
-    // One status item per visible menu-bar zone
-    private var statusItems: [String: NSStatusItem] = [:]
+
+    private var statusItems: [NSStatusItem] = []
     private var clockTimer: Timer?
- 
+
+    private let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.timeStyle = .short
+        f.dateStyle = .none
+        return f
+    }()
+
+    private let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.setLocalizedDateFormatFromTemplate("EEEdMMM")
+        return f
+    }()
+
     let viewModel = ClockViewModel()
     var popover = NSPopover()
     var eventMonitor: Any?
- 
+
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Wire view-model callback → rebuild status items
         viewModel.onMenuBarChanged = { [weak self] in
             self?.rebuildStatusItems()
         }
- 
-        // Initial build
+
         rebuildStatusItems()
- 
-        // Popover
-        popover.contentSize  = NSSize(width: 300, height: 400)
+
+        popover.contentSize  = NSSize(width: 300, height: 460)
         popover.behavior     = .transient
         popover.contentViewController =
             NSHostingController(rootView: ClockListView(viewModel: viewModel))
- 
-        // Dismiss popover on outside click
+
         eventMonitor = NSEvent.addGlobalMonitorForEvents(
             matching: [.leftMouseDown, .rightMouseDown]
         ) { [weak self] _ in
             guard let self, self.popover.isShown else { return }
             self.popover.performClose(nil)
         }
- 
-        // Tick every second to update time strings in menu bar
+
         clockTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             self?.updateStatusItemTitles()
         }
     }
-  
+
     private func rebuildStatusItems() {
-        // Remove all existing items
-        for item in statusItems.values {
+        for item in statusItems {
             NSStatusBar.system.removeStatusItem(item)
         }
         statusItems.removeAll()
- 
-        let clocks = viewModel.menuBarClocks   // already filtered by showInMenuBar
- 
+        
+        let clocks = viewModel.menuBarClocks   
+        
         if clocks.isEmpty {
-            // Always show at least the globe icon so the user can open preferences
-            let fallback = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+            let fallback = makeStatusItem()
             fallback.button?.image = NSImage(
                 systemSymbolName: "globe",
                 accessibilityDescription: "World Clock"
             )
-            fallback.button?.action   = #selector(togglePopover)
-            fallback.button?.target   = self
-            statusItems["__fallback__"] = fallback
-        } else {
-            for clock in clocks {
-                let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-                item.button?.title  = titleString(for: clock)
-                item.button?.action = #selector(togglePopover)
-                item.button?.target = self
-                statusItems[clock.id.uuidString] = item
-            }
+            statusItems.append(fallback)
+            return
         }
+        
+        let item = makeStatusItem()
+        item.button?.title   = mergedTitle(for: clocks)
+        item.button?.toolTip = clocks.map { $0.city }.joined(separator: " • ")
+        statusItems.append(item)
     }
- 
+
     private func updateStatusItemTitles() {
         let clocks = viewModel.menuBarClocks
-        let pairs  = zip(clocks, statusItems.values.sorted { _ , _ in true })
-        for (clock, item) in pairs {
-            item.button?.title = titleString(for: clock)
-        }
+        guard !clocks.isEmpty else { return }
+        
+        statusItems.first?.button?.title = mergedTitle(for: clocks)
     }
- 
-    private func titleString(for clock: ClockEntry) -> String {
-        let f = DateFormatter()
-        f.timeZone = clock.timeZone
-        f.timeStyle = .short
-        f.dateStyle = .none
-        return "\(clock.city): \(f.string(from: Date()))"
+
+    private func makeStatusItem() -> NSStatusItem {
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        item.button?.action = #selector(togglePopover)
+        item.button?.target = self
+        return item
     }
-  
+
+    private func dayOffsetSuffix(for clock: ClockEntry, now: Date) -> String {
+        let diff = clock.dayOffset(from: now, localTimeZone: TimeZone.current)
+        guard diff != 0 else { return "" }
+        return diff > 0 ? " (+\(diff))" : " (\(diff))"
+    }
+
+    private func mergedTitle(for clocks: [ClockEntry]) -> String {
+        let now = Date.now
+        timeFormatter.dateFormat = viewModel.menuBarTimeFormat
+        let timeStr = clocks.map { clock -> String in
+            timeFormatter.timeZone = clock.timeZone
+            return "\(viewModel.shortCode(for: clock.city)) \(timeFormatter.string(from: now))"
+        }.joined(separator: " · ")
+        guard viewModel.showDateInMenuBar else { return timeStr }
+        return "\(dateFormatter.string(from: now)) · \(timeStr)"
+    }
+
     @objc func togglePopover() {
-        // Use the first status item button as the anchor
-        guard let button = statusItems.values.first?.button else { return }
- 
+        guard let button = statusItems.first?.button else { return }
+
         if popover.isShown {
             popover.performClose(nil)
         } else {
