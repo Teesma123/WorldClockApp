@@ -7,7 +7,7 @@
 
 import Testing
 import Foundation
-@testable import WorldClock
+@testable import WorldClockLive
 
 struct WorldClockTests {
 
