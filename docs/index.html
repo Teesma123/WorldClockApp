@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>World Clock App</title>
+  <title>World Clock Live</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
     :root {
       --bg: #0d0d0f;
       --surface: #141417;
@@ -21,7 +21,7 @@
       --accent4: #90be6d;
       --accent5: #c77dff;
     }
-
+ 
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
@@ -29,7 +29,7 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
+ 
     /* ── HERO ── */
     .hero {
       position: relative;
@@ -47,6 +47,29 @@
         radial-gradient(ellipse 40% 50% at 50% 10%, rgba(199,125,255,0.09) 0%, transparent 60%);
       pointer-events: none;
     }
+ 
+    /* ── APP ICON ── */
+    .app-icon-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .app-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 40px rgba(72,202,228,0.25), 0 2px 8px rgba(0,0,0,0.5);
+      overflow: hidden;
+      position: relative;
+    }
+    .app-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+ 
     .badge {
       display: inline-block;
       font-size: 11px;
@@ -80,7 +103,7 @@
       line-height: 1.7;
       font-weight: 300;
     }
-
+ 
     /* ── BUTTONS ── */
     .btn-row {
       display: flex;
@@ -114,7 +137,91 @@
       box-shadow: 0 4px 24px rgba(199,125,255,0.3);
       border: 1px solid rgba(255,255,255,0.12);
     }
-
+    .btn-coffee {
+      background: linear-gradient(135deg, #fd8c00 0%, #ffdd57 100%);
+      color: #1a1a1a;
+      box-shadow: 0 4px 24px rgba(253,140,0,0.35);
+      border: 1px solid rgba(255,255,255,0.15);
+      font-weight: 600;
+    }
+ 
+    /* ── DEMO VIDEO ── */
+    .demo-wrap {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .demo-placeholder {
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: linear-gradient(145deg, #141420 0%, #1e1e2e 100%);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .demo-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 50% 50%, rgba(72,202,228,0.08) 0%, transparent 70%);
+    }
+    .play-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, background 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+    .demo-placeholder:hover .play-btn {
+      transform: scale(1.1);
+      background: rgba(72,202,228,0.2);
+      border-color: var(--accent3);
+    }
+    .play-btn svg { margin-left: 4px; }
+    .demo-placeholder p {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 400;
+      margin: 0;
+      position: relative;
+    }
+    .demo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-top: 1px solid var(--border);
+    }
+    .demo-bar-dots { display: flex; gap: 7px; }
+    .demo-bar-dots span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .demo-bar-dots span:nth-child(1) { background: #ff5f57; }
+    .demo-bar-dots span:nth-child(2) { background: #febc2e; }
+    .demo-bar-dots span:nth-child(3) { background: #28c840; }
+    .demo-bar-title {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+ 
     /* ── SCREENSHOTS ── */
     .section { padding: 60px 24px; max-width: 860px; margin: 0 auto; }
     .section-label {
@@ -142,7 +249,7 @@
       transform: scale(1.03) translateY(-4px);
       box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     }
-
+ 
     /* ── FEATURES ── */
     .features-grid {
       display: grid;
@@ -176,7 +283,7 @@
     .feature-card.c4::before { background: linear-gradient(90deg, var(--accent5), #e879f9); }
     .feature-card.c5::before { background: linear-gradient(90deg, #f9c74f, var(--accent1)); }
     .feature-card.c6::before { background: linear-gradient(90deg, #fb5607, var(--accent2)); }
-
+ 
     .feature-icon {
       font-size: 26px;
       margin-bottom: 13px;
@@ -194,8 +301,7 @@
       line-height: 1.6;
       font-weight: 300;
     }
-
-    /* label preview pill */
+ 
     .label-preview {
       display: inline-flex;
       align-items: center;
@@ -215,7 +321,137 @@
       background: var(--accent3);
       flex-shrink: 0;
     }
-
+ 
+    /* ── DEVELOPER CARD ── */
+    .developer-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+    .developer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+    .developer-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 90% 50%, rgba(199,125,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .developer-card:hover { border-color: rgba(199,125,255,0.25); }
+    .dev-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent5), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(199,125,255,0.3);
+    }
+    .dev-info { flex: 1; min-width: 0; }
+    .dev-role {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent5);
+      margin-bottom: 6px;
+    }
+    .dev-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .dev-bio {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-weight: 300;
+      margin-bottom: 14px;
+    }
+    .dev-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .dev-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 6px 12px;
+      transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .dev-link:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+    }
+ 
+    @media (max-width: 540px) {
+      .developer-card { flex-direction: column; text-align: center; }
+      .dev-links { justify-content: center; }
+    }
+ 
+    /* ── SUPPORT SECTION ── */
+    .support-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      text-align: center;
+    }
+    .support-inner {
+      background: linear-gradient(135deg, rgba(253,140,0,0.08) 0%, rgba(255,221,87,0.05) 100%);
+      border: 1px solid rgba(253,140,0,0.2);
+      border-radius: 20px;
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .support-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 80% at 50% 0%, rgba(253,140,0,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .support-inner h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+    .support-inner p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+ 
     /* ── DIVIDER ── */
     .divider {
       height: 1px;
@@ -223,7 +459,7 @@
       max-width: 860px;
       margin: 0 auto;
     }
-
+ 
     /* ── FOOTER ── */
     footer {
       text-align: center;
@@ -231,14 +467,21 @@
       font-size: 12px;
       color: #444;
     }
+    footer a { color: #555; text-decoration: none; }
+    footer a:hover { color: #888; }
   </style>
 </head>
 <body>
-
+ 
   <!-- HERO -->
   <section class="hero">
+    <div class="app-icon-wrap">
+      <div class="app-icon">
+        <img src="images/WorldClockLive_AppIcon_1024.png" alt="World Clock Live App Icon">
+      </div>
+    </div>
     <div class="badge">macOS App</div>
-    <h1>World<br><em>Clock App</em></h1>
+    <h1>World<br><em>Clock Live</em></h1>
     <p>Track time across multiple cities effortlessly — right from your menu bar.</p>
     <div class="btn-row">
       <a class="btn btn-github" href="https://github.com/Teesma123/WorldClockApp.git">
@@ -251,68 +494,125 @@
       </a>
     </div>
   </section>
-
+ 
+  <!-- DEMO VIDEO -->
+  <section class="section" style="padding-top: 0;">
+    <p class="section-label">Demo</p>
+    <div class="demo-wrap">
+      <div class="demo-bar">
+        <div class="demo-bar-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span class="demo-bar-title">World Clock Live — Demo</span>
+        <div style="width:52px;"></div>
+      </div>
+      <img src="docs/images/WorldClockLive.gif" alt="World Clock Live Demo" style="width:100%; display:block; border-radius: 0 0 20px 20px;">
+    </div>
+  </section>
+ 
+  <div class="divider"></div>
+ 
   <!-- SCREENSHOTS -->
   <section class="section">
     <p class="section-label">Screenshots</p>
     <div class="screenshots">
-      <img src="images/Screenshot1.png" alt="App screenshot 1">
-      <img src="images/Screenshot2.png" alt="App screenshot 2">
-      <img src="images/Screenshot3.png" alt="App screenshot 3">
-      <img src="images/Screenshot4.png" alt="App screenshot 4">
+      <img src="docs/images/Screenshot1.png" alt="App screenshot 1">
+      <img src="docs/images/Screenshot2.png" alt="App screenshot 2">
+      <img src="docs/images/Screenshot3.png" alt="App screenshot 3">
+      <img src="docs/images/Screenshot4.png" alt="App screenshot 4">
     </div>
   </section>
-
+ 
   <div class="divider"></div>
-
+ 
   <!-- FEATURES -->
   <section class="section">
     <p class="section-label">Features</p>
     <div class="features-grid">
-
+ 
       <div class="feature-card c1">
         <span class="feature-icon">🌆</span>
         <h3>Add up to 4 cities</h3>
         <p>Monitor up to four time zones at once in a clean, focused layout — no clutter.</p>
       </div>
-
+ 
       <div class="feature-card c2">
         <span class="feature-icon">🕐</span>
         <h3>Menu bar clock</h3>
         <p>A live clock lives right in your macOS menu bar — always visible, zero distraction.</p>
       </div>
-
+ 
       <div class="feature-card c3">
         <span class="feature-icon">↕️</span>
         <h3>Drag & drop cities</h3>
         <p>Drag a city from the city list and drop it into your clock list or menu bar — and drag it back just as easily.</p>
       </div>
-
+ 
       <div class="feature-card c5">
         <span class="feature-icon">🏷️</span>
         <h3>Custom label</h3>
         <p>Set a personal label for each city in both the clock list and the menu bar — so you always know exactly which time you're looking at.</p>
         <div class="label-preview"><span class="dot"></span>Home · 06:24</div>
       </div>
-
+ 
       <div class="feature-card c6">
         <span class="feature-icon">🖥️</span>
         <h3>Display tab</h3>
         <p>A dedicated Display tab to fine-tune how your clock looks and behaves across the app and menu bar.</p>
       </div>
-
+ 
       <div class="feature-card c4">
         <span class="feature-icon">✨</span>
         <h3>Clean & minimal UI</h3>
         <p>Designed to stay out of your way — refined, distraction-free, and fast.</p>
       </div>
-
+ 
     </div>
   </section>
-
+ 
+  <div class="divider"></div>
+ 
+  <!-- DEVELOPER -->
+  <section class="developer-section" style="padding-top: 60px;">
+    <p class="section-label" style="margin-bottom: 20px;">Developer</p>
+    <div class="developer-card">
+      <div class="dev-avatar">👨‍💻</div>
+      <div class="dev-info">
+        <div class="dev-role">Built by</div>
+        <div class="dev-name">Teesma M</div>
+        <div class="dev-bio">iOS developer passionate about crafting minimal, delightful utilities that fit seamlessly into your workflow.</div>
+        <div class="dev-links">
+          <a class="dev-link" href="https://github.com/teesma-dev" target="_blank" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <!-- Replace # with your contact email link, e.g. mailto:you@email.com -->
+          <a class="dev-link" href="mailto:teeshmateeshu@gmail.com" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Contact
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <div class="divider"></div>
+ 
+  <!-- SUPPORT / BUY ME A COFFEE -->
+  <section class="support-section" style="padding-top: 60px;">
+    <div class="support-inner">
+      <h2>Love the app? ☕</h2>
+      <p>World Clock Live is free and open-source. If it saves you time every day, consider buying me a coffee — it keeps the development going!</p>
+      <a class="btn btn-coffee" href="https://www.buymeacoffee.com/" target="_blank" rel="noopener" style="display:inline-flex;">
+        ☕ Buy Me a Coffee
+      </a>
+    </div>
+  </section>
+ 
   <footer>
-    Built with care · World Clock App
+    Built with care by <a href="https://github.com/Teesma123" target="_blank">Teesma</a> · World Clock Live ·
+    <a href="https://github.com/Teesma123/WorldClockApp" target="_blank">GitHub</a>
   </footer>
-
+ 
 </body>
 </html>
