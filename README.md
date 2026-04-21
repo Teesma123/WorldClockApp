@@ -11,7 +11,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/macOS-14.0%2B-black?style=flat-square&logo=apple" />
   <img src="https://img.shields.io/badge/Swift-5-orange?style=flat-square&logo=swift" />
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" />
 </p>
 
 <br />
@@ -107,12 +106,6 @@ If you find this app useful, consider buying me a coffee — it helps me keep bu
     <img src="https://img.shields.io/badge/☕%20Buy%20me%20a%20coffee-Support%20this%20project-FFDD00?style=for-the-badge&logoColor=black" />
   </a>
 </p>
-
----
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
